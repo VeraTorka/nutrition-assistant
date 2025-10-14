@@ -15,10 +15,10 @@ Nutrition Assistant is a retrieval-augmented application that answers nutrition 
 
 **Use cases**
 
-Look up macronutrients (kcal, protein, fat, carbs).
-Check vitamins & minerals (A, B6, B12, C, D, E, calcium, iron, potassium, magnesium, selenium, zinc, iodine).
-Review allergens (tree nuts, peanut, sesame, etc.).
-Ask free-form questions in a Streamlit UI.
+- Look up macronutrients (kcal, protein, fat, carbs).
+- Check vitamins & minerals (A, B6, B12, C, D, E, calcium, iron, potassium, magnesium, selenium, zinc, iodine).
+- Review allergens (tree nuts, peanut, sesame, etc.).
+- Ask free-form questions in a Streamlit UI.
 
 ## Dataset Description
 
@@ -68,5 +68,55 @@ pipenv install --dev
 
 ## Running the application
 
+## Experiments (check links)
+
+For experiments, we use Jupyter notebooks.
+They are in the [`notebooks`](notebooks/) folder.
+
+To start Jupyter, run:
+
+```bash
+cd notebooks
+pipenv run jupyter notebook
+```
+
+We have the following notebooks:
+
+- [`01-dataset, minsearch, rag.ipynb`](notebooks/rag-test.ipynb): The RAG flow and evaluating the system.
+- [`02-eval-data-gen.ipynb`](notebooks/evaluation-data-generation.ipynb): Generating the ground truth dataset for retrieval evaluation.
 
 
+## Retrieval evaluation
+The basic approach - using `minsearch` without any boosting - gave the following metrics:
+- Hit rate: 89%
+- MRR: 74%
+
+The improved version (with tuned boosting):
+- Hit rate: 92%
+- MRR: 77%
+
+The best boosting parameters:
+
+```python
+boost = {'food': 3.00,
+          'serving_size_g': 0.45,
+          'calories_kcal': 0.32,
+          'protein_g': 2.86,
+          'fat_g': 1.10,
+          'carbohydrates_g': 2.11,
+          'vitamin_a_mg': 0.91,
+          'vitamin_b6_mg': 1.38,
+          'vitamin_b12_mg': 2.64,
+          'vitamin_c_mg': 2.90,
+          'vitamin_d_mg': 1.30,
+          'vitamin_e_mg': 0.09,
+          'calcium_mg': 0.91,
+          'iron_mg': 2.44,
+          'potassium_mg': 0.03,
+          'magnesium_mg': 2.03,
+          'selenium_mg': 2.78,
+          'zinc_mg': 1.70,
+          'iodine_mg': 1.67,
+          'allergens': 0.21
+        }
+```
