@@ -10755,7 +10755,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 84,
    "id": "d704405b-a619-46a8-a557-b293117d182c",
    "metadata": {},
    "outputs": [],
@@ -10774,22 +10774,52 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 85,
    "id": "31f4f308-f065-40f3-9ef4-b4825895a48d",
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "relevance\n",
+       "RELEVANT           161\n",
+       "PARTLY_RELEVANT     33\n",
+       "NON_RELEVANT         6\n",
+       "Name: count, dtype: int64"
+      ]
+     },
+     "execution_count": 85,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
    "source": [
     "df_eval.relevance.value_counts()"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 86,
    "id": "f113dfa5-7a26-4bdb-86c2-fb0b47b75a50",
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "relevance\n",
+       "RELEVANT           0.805\n",
+       "PARTLY_RELEVANT    0.165\n",
+       "NON_RELEVANT       0.030\n",
+       "Name: proportion, dtype: float64"
+      ]
+     },
+     "execution_count": 86,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
    "source": [
-    "df_eval.relevance.value_counts()"
+    "df_eval.relevance.value_counts(normalize=True)"
    ]
   },
   {
