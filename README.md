@@ -68,6 +68,24 @@ pipenv install --dev
 
 ## Running the application
 
+## Interface
+
+We use Flask for serving the application as an API.
+
+Refer to the ["Using the Application" section](#using-the-application)
+for examples on how to interact with the application.
+
+## Ingestion
+
+The ingestion script is in [`ingest.py`](nutrition_assistant/ingest.py).
+
+Since we use an in-memory database, `minsearch`, as our
+knowledge base, we run the ingestion script at the startup
+of the application.
+
+It's executed inside [`rag.py`](nutrition_assistant/rag.py)
+when we import it.
+
 ## Experiments (check links)
 
 For experiments, we use Jupyter notebooks.
@@ -120,3 +138,102 @@ boost = {'food': 3.00,
           'allergens': 0.21
         }
 ```
+
+### RAG flow evaluation
+
+We used the LLM-as-a-Judge metric to evaluate the quality
+of our RAG flow.
+
+For `gpt-4o-mini`, in a sample with 200 records, we had:
+
+- 163 (81,5%) `RELEVANT`
+- 34 (17%) `PARTLY_RELEVANT`
+- 3 (1.5%) `NON_RELEVANT`
+
+We also tested `gpt-4o`:
+
+- 161 (80,5%) `RELEVANT`
+- 33 (16,5%) `PARTLY_RELEVANT`
+- 6 (3%) `NON_RELEVANT`
+
+The difference is minimal - 1%, so we opted for `gpt-4o-mini`.
+
+### Using `requests`
+
+When the application is running, you can use
+[requests](https://requests.readthedocs.io/en/latest/)
+to send questions—use [test.py](test.py) for testing it:
+
+```bash
+pipenv run python test.py
+```
+
+It will pick a random question from the ground truth dataset
+and send it to the app.
+
+
+### CURL
+
+You can also use `curl` for interacting with the API:
+
+```bash 
+URL=http://localhost:5000
+QUESTION="What is the vitamin C content in a 100g apple compared to an orange?"
+DATA='{
+    "question": "'${QUESTION}'"
+}'
+
+curl -X POST \
+    -H "Content-Type: application/json" \
+    -d "${DATA}" \
+    ${URL}/question
+```
+You will see something like the following in the response:
+
+```json 
+   {
+  "answer": "In a 100g apple, the vitamin C content is 4.6 mg, while in a 100g orange, it is 53.2 mg. Therefore, the orange contains significantly more vitamin C than the apple.",
+  "conversation_id": "d60e2b16-ee87-406f-a589-91dd7a25e11a",
+  "question": "What is the vitamin C content in a 100g apple compared to an orange?"
+}
+```
+Sending feedback:
+
+```bash
+ID="d60e2b16-ee87-406f-a589-91dd7a25e11a"
+URL=http://localhost:5000
+FEEDBACK_DATA='{
+    "conversation_id": "'${ID}'",
+    "feedback": 1
+}'
+
+curl -X POST \
+    -H "Content-Type: application/json" \
+    -d "${FEEDBACK_DATA}" \
+    ${URL}/feedback
+```
+After sending it, you'll receive the acknowledgement:
+
+```json
+{
+  "message": "Feedback received for conversation d60e2b16-ee87-406f-a589-91dd7a25e11a: 1"
+}
+```
+
+## Background
+
+Here we provide background on some tech not used in the
+course and links for further reading.
+
+### Flask
+
+We use Flask for creating the API interface for our application.
+It's a web application framework for Python: we can easily
+create an endpoint for asking questions and use web clients
+(like `curl` or `requests`) for communicating with it.
+
+In our case, we can send questions to `http://localhost:5000/question`.
+
+For more information, visit the [official Flask documentation](https://flask.palletsprojects.com/).
+
+
