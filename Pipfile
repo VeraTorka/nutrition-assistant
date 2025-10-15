@@ -7,14 +7,16 @@ name = "pypi"
 openai = "*"
 scikit-learn = "*"
 pandas = "*"
-flask = "*"
 streamlit = "*"
+minsearch = "*"
+flask = "*"
 
 [dev-packages]
 tqdm = "*"
 notebook = "==7.1.2"
 ipywidgets = "*"
 hyperopt = "*"
+requests = "*"
 
 [requires]
 python_version = "3.12"
