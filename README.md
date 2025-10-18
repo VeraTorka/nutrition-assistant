@@ -1,49 +1,118 @@
 # 🥗 Nutrition Assistant 🥗
-### (a RAG-based Q&A chatbot)
-A conversational RAG app that answers nutrition questions from a curated food table (macros, vitamins, minerals, allergens). It retrieves the most relevant rows and generates grounded answers.
+*(a RAG-based Q&A chatbot for nutrition facts)*  
 
-This project was implemented for 
-[LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) -
-a free course about LLMs and RAG.
+[Repository: VeraTorka/nutrition-assistant](https://github.com/VeraTorka/nutrition-assistant/tree/main)  
+Final submission for [DataTalksClub LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) 2025  
+
+A conversational RAG app that answers nutrition questions from a curated food table (macros, vitamins, minerals, allergens). It retrieves the most relevant rows and generates grounded answers.
 
 To see a demo of the project check this video:
 
-## Overview (Problem description)
+## 🎯 Overview – Problem Description (2 / 2)  
+**Problem:**  
 People often lack reliable nutrition facts for everyday foods, struggle to estimate macros for portions, and need quick substitutions that respect allergens. Generic chatbots can hallucinate values because they don’t ground answers in a verified dataset.
 
+**Solution:** 
 Nutrition Assistant is a retrieval-augmented application that answers nutrition questions using a local, curated CSV knowledge base. It retrieves the most relevant food entries and composes concise, evidence-based responses, reducing hallucinations and speeding up decisions.
 
 **Use cases**
-
 - Look up macronutrients (kcal, protein, fat, carbs).
 - Check vitamins & minerals (A, B6, B12, C, D, E, calcium, iron, potassium, magnesium, selenium, zinc, iodine).
 - Review allergens (tree nuts, peanut, sesame, etc.).
 - Ask free-form questions in a Streamlit UI.
 
-## Dataset Description
+---
 
-The dataset used in this project contains information about **various food items**, including both plant-based and animal-based meals, snacks, and supplements. Each record represents one specific food item with detailed nutritional and micronutrient information.
-- **food:** The name of the food item (e.g., *Tofu scramble, Lentil stew, Salmon sandwich*).  
-- **serving_size_g:** Standard serving size in grams (all values normalized to 100 g).  
-- **calories_kcal:** Energy value per 100 g, measured in kilocalories.  
-- **protein_g:** Amount of protein (in grams) per 100 g.  
-- **fat_g:** Amount of total fat (in grams) per 100 g.  
-- **carbohydrates_g:** Total carbohydrates (in grams) per 100 g.  
-- **vitamin_a_mg – vitamin_e_mg:** Concentrations of selected vitamins (A, B6, B12, C, D, E) in milligrams.  
-- **calcium_mg, iron_mg, potassium_mg, magnesium_mg, selenium_mg, zinc_mg, iodine_mg:** Key minerals and trace elements (mg per 100 g).  
-- **allergens:** Common allergens present in the product (e.g., *Soy, Gluten, Milk, Egg, Fish, Shellfish*).  
+## 📚 Dataset Description 
+
+The dataset `data/data.csv` consists of ~435 records, each representing a food item (plant-based, animal-based, snacks, supplements) normalized to 100 g serving.  
+Columns include:  
+- `food` – food name (e.g., Tofu scramble, Lentil stew, Salmon sandwich).  
+- `serving_size_g`, `calories_kcal`, `protein_g`, `fat_g`, `carbohydrates_g`.  
+- `vitamin_a_mg`, `vitamin_b6_mg`, `vitamin_b12_mg`, `vitamin_c_mg`, `vitamin_d_mg`, `vitamin_e_mg`.  
+- `calcium_mg`, `iron_mg`, `potassium_mg`, `magnesium_mg`, `selenium_mg`, `zinc_mg`, `iodine_mg`.  
+- `allergens` – common allergens in the product (e.g., Soy, Gluten, Milk, Egg, Fish, Shellfish).  
+
+The dataset was generated using [ChatGPT](https://chatgpt.com/share/68ee24bc-58a4-8009-919c-8fd5f42ba24e) and curated to realistic nutritional values.
+
+---
+
+## ⚙️ Retrieval Flow (2 / 2)  
+Architecture: 
+User Query → Retrieval Engine (MinSearch) → Top-k Results → LLM (OpenAI) → Grounded Answer
+
+- The application uses **MinSearch** for full-text retrieval from the CSV dataset (via `ingest.py` and `rag.py`).  
+- The top results are passed to the LLM (OpenAI) which composes an answer grounded in the retrieved context.  
+- This combination of a knowledge base + LLM constitutes a full RAG (Retrieval-Augmented Generation) flow.
+
+---
+
+## Experiments (check links)
+
+For experiments, we use Jupyter notebooks.
+They are in the [`notebooks`](notebooks/) folder.
+
+To start Jupyter, run:
+
+```bash
+cd notebooks
+pipenv run jupyter notebook
+```
+
+We have the following notebooks:
+
+- [`01-dataset, minsearch, rag.ipynb`](notebooks/rag-test.ipynb): The RAG flow and evaluating the system.
+- [`02-eval-data-gen.ipynb`](notebooks/evaluation-data-generation.ipynb): Generating the ground truth dataset for retrieval evaluation.
+
+---
+
+## 🔎 Retrieval Evaluation (2 / 2)  
+Evaluation is based on a ground truth dataset (`ground-truth-retrieval.csv`) and metrics:  
+- Baseline retrieval: Hit Rate = 0.89, MRR = 0.74  
+- Tuned retrieval (with boosting weights): Hit Rate = 0.92, MRR = 0.77  
+Boost weights used for fields (food, serving_size_g, etc.) are listed below
+
+The best boosting parameters:
+
+```python
+boost = {'food': 3.00,
+          'serving_size_g': 0.45,
+          'calories_kcal': 0.32,
+          'protein_g': 2.86,
+          'fat_g': 1.10,
+          'carbohydrates_g': 2.11,
+          'vitamin_a_mg': 0.91,
+          'vitamin_b6_mg': 1.38,
+          'vitamin_b12_mg': 2.64,
+          'vitamin_c_mg': 2.90,
+          'vitamin_d_mg': 1.30,
+          'vitamin_e_mg': 0.09,
+          'calcium_mg': 0.91,
+          'iron_mg': 2.44,
+          'potassium_mg': 0.03,
+          'magnesium_mg': 2.03,
+          'selenium_mg': 2.78,
+          'zinc_mg': 1.70,
+          'iodine_mg': 1.67,
+          'allergens': 0.21
+        }
+```
+
+Multiple approaches were compared and the best one selected.
+
+---
+
+## 🤖 LLM Evaluation (2 / 2)  
+Responses were evaluated using an LLM-as-judge metric:  
+| Model        | RELEVANT | PARTLY_RELEVANT | NON_RELEVANT |
+|--------------|----------|-----------------|-------------|
+| gpt-4o-mini  | 81.5 %   | 17.0 %          | 1.5 %       |
+| gpt-4o       | 80.5 %   | 16.5 %          | 3.0 %       |  
+Because the difference was minimal (~1 %), gpt-4o-mini was selected for the project.
+
+---
 
 
-The dataset was generated using [ChatGPT](https://chatgpt.com/share/68ee24bc-58a4-8009-919c-8fd5f42ba24e) and contains 435 records. 
-
-## Technologies
-
-- Python 3.12
-- Docker and Docker Compose for containerization
-- [Minsearch](https://github.com/alexeygrigorev/minsearch) for full-text search
-- Flask as the API interface (see [Background](#background) for more information on Flask)
-- Grafana for monitoring and PostgreSQL as the backend for it
-- OpenAI as an LLM
 
 ## Preparation
 
@@ -86,58 +155,9 @@ of the application.
 It's executed inside [`rag.py`](nutrition_assistant/rag.py)
 when we import it.
 
-## Experiments (check links)
-
-For experiments, we use Jupyter notebooks.
-They are in the [`notebooks`](notebooks/) folder.
-
-To start Jupyter, run:
-
-```bash
-cd notebooks
-pipenv run jupyter notebook
-```
-
-We have the following notebooks:
-
-- [`01-dataset, minsearch, rag.ipynb`](notebooks/rag-test.ipynb): The RAG flow and evaluating the system.
-- [`02-eval-data-gen.ipynb`](notebooks/evaluation-data-generation.ipynb): Generating the ground truth dataset for retrieval evaluation.
 
 
-## Retrieval evaluation
-The basic approach - using `minsearch` without any boosting - gave the following metrics:
-- Hit rate: 89%
-- MRR: 74%
 
-The improved version (with tuned boosting):
-- Hit rate: 92%
-- MRR: 77%
-
-The best boosting parameters:
-
-```python
-boost = {'food': 3.00,
-          'serving_size_g': 0.45,
-          'calories_kcal': 0.32,
-          'protein_g': 2.86,
-          'fat_g': 1.10,
-          'carbohydrates_g': 2.11,
-          'vitamin_a_mg': 0.91,
-          'vitamin_b6_mg': 1.38,
-          'vitamin_b12_mg': 2.64,
-          'vitamin_c_mg': 2.90,
-          'vitamin_d_mg': 1.30,
-          'vitamin_e_mg': 0.09,
-          'calcium_mg': 0.91,
-          'iron_mg': 2.44,
-          'potassium_mg': 0.03,
-          'magnesium_mg': 2.03,
-          'selenium_mg': 2.78,
-          'zinc_mg': 1.70,
-          'iodine_mg': 1.67,
-          'allergens': 0.21
-        }
-```
 
 ### RAG flow evaluation
 
