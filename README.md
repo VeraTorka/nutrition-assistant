@@ -6,6 +6,8 @@ Final submission for [DataTalksClub LLM Zoomcamp](https://github.com/DataTalksCl
 
 A conversational RAG app that answers nutrition questions from a curated food table (macros, vitamins, minerals, allergens). It retrieves the most relevant rows and generates grounded answers.
 
+[🎥 Watch demo](assets/demo.mp4)
+
 ## 🎯 Overview – Problem Description (2 / 2)  
 **Problem:**  
 
@@ -424,14 +426,14 @@ You will see something like the following in the response:
 ```json 
    {
   "answer": "In a 100g apple, the vitamin C content is 4.6 mg, while in a 100g orange, it is 53.2 mg. Therefore, the orange contains significantly more vitamin C than the apple.",
-  "conversation_id": "d60e2b16-ee87-406f-a589-91dd7a25e11a",
+  "conversation_id": "11cd00f0-8def-45ca-896d-91fad2d76e84",
   "question": "What is the vitamin C content in a 100g apple compared to an orange?"
 }
 ```
 Sending feedback:
 
 ```bash
-ID="d60e2b16-ee87-406f-a589-91dd7a25e11a"
+ID="11cd00f0-8def-45ca-896d-91fad2d76e84"
 URL=http://localhost:5000
 FEEDBACK_DATA='{
     "conversation_id": "'${ID}'",
