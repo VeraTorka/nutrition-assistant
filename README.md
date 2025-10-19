@@ -6,7 +6,7 @@ Final submission for [DataTalksClub LLM Zoomcamp](https://github.com/DataTalksCl
 
 A conversational RAG app that answers nutrition questions from a curated food table (macros, vitamins, minerals, allergens). It retrieves the most relevant rows and generates grounded answers.
 
-[🎥 Watch demo](assets/demo.mp4)
+<video src="assets/demo.mp4" width="600" controls></video>
 
 ## 🎯 Overview – Problem Description (2 / 2)  
 **Problem:**  
