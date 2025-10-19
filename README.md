@@ -1,6 +1,10 @@
 # 🥗 Nutrition Assistant 🥗
 *(a RAG-based Q&A chatbot for nutrition facts)*  
 
+<p align="center">
+  <img src="assets/cover.png" alt="AI Nutrition Assistant" width="500">
+</p>
+
 [Repository: VeraTorka/nutrition-assistant](https://github.com/VeraTorka/nutrition-assistant/tree/main)  
 Final submission for [DataTalksClub LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) 2025  
 
