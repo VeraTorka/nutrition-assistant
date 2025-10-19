@@ -29,7 +29,7 @@ Nutrition Assistant is a retrieval-augmented application that answers nutrition 
 - Look up macronutrients (kcal, protein, fat, carbs).
 - Check vitamins & minerals (A, B6, B12, C, D, E, calcium, iron, potassium, magnesium, selenium, zinc, iodine).
 - Review allergens (tree nuts, peanut, sesame, etc.).
-- Ask free-form questions in a Streamlit UI.
+- Ask free-form questions using Flask API.
 
 **Example use cases:**
 
@@ -67,7 +67,7 @@ The dataset was generated using [ChatGPT](https://chatgpt.com/share/68ee24bc-58a
 ```text
 User question
       ↓
-Flask API  (or Streamlit UI)
+Flask API
       ↓
 Retriever — MinSearch (vector + text index)
       ↓
@@ -90,7 +90,7 @@ Monitoring dashboards (Grafana)**
 
 | Component | Description |
 |------------|-------------|
-| **Flask API / Streamlit UI** | Serves endpoints `/question` and `/feedback`. Enables user interaction and feedback submission. |
+| **Flask API** | Serves endpoints `/question` and `/feedback`. Enables user interaction and feedback submission. |
 | **MinSearch Retriever** | Lightweight local full-text + vector search engine for indexing food data and retrieving top-k relevant rows. |
 | **OpenAI LLM** | Generates concise and factually grounded answers using retrieved records as context. |
 | **PostgreSQL** | Stores all conversations and user feedback for later analysis. |
