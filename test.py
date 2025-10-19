@@ -4,7 +4,7 @@ import requests
 
 url = "http://localhost:5000/question"
 
-question ="What is the vitamin C content in a 100g apple compared to an orange?"
+question ="How much protein is in 100g of tofu?"
 
 data = {"question": question}
 
