@@ -6,8 +6,6 @@ Final submission for [DataTalksClub LLM Zoomcamp](https://github.com/DataTalksCl
 
 A conversational RAG app that answers nutrition questions from a curated food table (macros, vitamins, minerals, allergens). It retrieves the most relevant rows and generates grounded answers.
 
-To see a demo of the project check this video:
-
 ## 🎯 Overview – Problem Description (2 / 2)  
 **Problem:**  
 
@@ -26,7 +24,7 @@ Nutrition Assistant is a retrieval-augmented application that answers nutrition 
 - Review allergens (tree nuts, peanut, sesame, etc.).
 - Ask free-form questions in a Streamlit UI.
 
-*** 🔍 Example use cases: ***
+**Example use cases:**
 
 - "How much protein is in 100g of tofu?"
 - "Which fruit has more vitamin C: apple or orange?"
@@ -37,7 +35,7 @@ Nutrition Assistant is a retrieval-augmented application that answers nutrition 
 
 ## 📚 Dataset Description 
 
-The dataset `data/data.csv` consists of ~435 records, each representing a food item (plant-based, animal-based, snacks, supplements) normalized to 100 g serving.  
+The dataset [`data/data.csv`](data/data.csv) consists of ~435 records, each representing a food item (plant-based, animal-based, snacks, supplements) normalized to 100 g serving.  
 Columns include:  
 - `food` – food name (e.g., Tofu scramble, Lentil stew, Salmon sandwich).  
 - `serving_size_g`, `calories_kcal`, `protein_g`, `fat_g`, `carbohydrates_g`.  
@@ -56,9 +54,9 @@ The dataset was generated using [ChatGPT](https://chatgpt.com/share/68ee24bc-58a
 
 ---
 
-## ⚙️ Project Architecture - Retrieval Flow (2 / 2)  
-### 🔄 High-level Flow
+## ⚙️ Project Architecture - Retrieval Flow (2 / 2) 
 
+### High-level Flow
 ```text
 User question
       ↓
@@ -81,7 +79,7 @@ Monitoring dashboards (Grafana)**
 - The top results are passed to the LLM (OpenAI) which composes an answer grounded in the retrieved context.  
 - This combination of a knowledge base + LLM constitutes a full RAG (Retrieval-Augmented Generation) flow.
 
-### 🧩 Components Overview
+### Components Overview
 
 | Component | Description |
 |------------|-------------|
@@ -92,29 +90,25 @@ Monitoring dashboards (Grafana)**
 | **Grafana** | Optional monitoring layer — visualizes feedback statistics and retrieval quality metrics. |
 | **Docker Compose** | Orchestrates the app, PostgreSQL, and Grafana containers for fully reproducible deployment. |
 
-### 📂 Key Files
+### Key Files
 
 | File | Description |
 |------|--------------|
-| `nutrition_assistant/app.py` | Main Flask API with endpoints `/question` and `/feedback`. Handles user queries and stores responses. |
-| `nutrition_assistant/ingest.py` | Loads `data/data.csv`, builds a MinSearch index, and prepares it for retrieval. |
-| `nutrition_assistant/rag.py` | Core logic for Retrieval-Augmented Generation — retrieves relevant rows and queries the LLM. |
-| `nutrition_assistant/db.py` | Handles PostgreSQL connections, creates tables, and logs feedback and conversation data. |
-| `nutrition_assistant/app_streamlit.py` | Streamlit interface for interactive use and real-time feedback collection. |
-| `grafana/init.py` | Optional dashboard provisioning script for Grafana setup. |
-| `docker-compose.yaml` | Defines all containers — app, PostgreSQL, and Grafana — for full local deployment. |
-| `Dockerfile` | Builds the application image with all dependencies. |
-| `data/data.csv` | Nutrition knowledge base containing 400+ verified food items with macro/micronutrient data. |
-| `notebooks/` | Jupyter notebooks for evaluation and experiments (`rag-test.ipynb`, `evaluation-data-generation.ipynb`). |
-| `test.py` | CLI script to send test queries to the Flask API and validate responses. |
+| [`nutrition_assistant/app.py`](nutrition_assistant/app.py) | Main Flask API with endpoints `/question` and `/feedback`. Handles user queries and stores responses. |
+| [`nutrition_assistant/ingest.py`](nutrition_assistant/ingest.py) | Loads `data/data.csv`, builds a MinSearch index, and prepares it for retrieval. |
+| [`nutrition_assistant/rag.py`](nutrition_assistant/rag.py) | Core logic for Retrieval-Augmented Generation — retrieves relevant rows and queries the LLM. |
+| [`nutrition_assistant/db.py`](nutrition_assistant/db.py) | Handles PostgreSQL connections, creates tables, and logs feedback and conversation data. |
+| [`docker-compose.yaml`](/docker-compose.yaml) | Defines all containers — app, PostgreSQL, and Grafana — for full local deployment. |
+| [`Dockerfile`](/Dockerfile) | Builds the application image with all dependencies. |
+| [`data/data.csv`](data/data.csv) | Nutrition knowledge base containing 400+ verified food items with macro/micronutrient data. |
+| [`notebooks/`](/notebooks/) | Jupyter notebooks for evaluation and experiments (`rag-test.ipynb`, `evaluation-data-generation.ipynb`). |
+| [`test.py`](/test.py) | CLI script to send test queries to the Flask API and validate responses. |
 
 ---
 
 ## Experiments
 
-For experiments, we use Jupyter notebooks.
-They are in the [`notebooks`](notebooks/) folder.
-
+For experiments, we use Jupyter notebooks. They are in the [`notebooks`](notebooks/) folder.
 To start Jupyter, run:
 ```bash
 cd notebooks
@@ -122,14 +116,12 @@ pipenv run jupyter notebook
 ```
 
 We have the following notebooks:
-- [`01-dataset, minsearch, rag.ipynb`](notebooks/01-dataset, minsearch, rag.ipynb): The RAG flow and evaluating the system.
+- [`01-dataset, minsearch, rag.ipynb`](notebooks/01-dataset-minsearch-rag.ipynb): The RAG flow and evaluating the system.
 - [`02-eval-data-gen.ipynb`](notebooks/02-eval-data-gen.ipynb): Generating the ground truth dataset for retrieval evaluation.
-
----
 
 ### 🔎 Retrieval Evaluation (MinSearch) (2 / 2)  
 
-Retrieval evaluation was performed using a ground truth dataset (`ground-truth-retrieval.csv`) of 200 queries and LLM-based validation to ensure the correctness of retrieved results: 
+Retrieval evaluation was performed using a ground truth dataset ([`ground-truth-retrieval.csv`](data/ground-truth-retrieval.csv) of 200 queries and LLM-based validation to ensure the correctness of retrieved results: 
 - Baseline retrieval: Hit Rate = 0.89, MRR = 0.74  
 - Tuned retrieval (with boosting weights): Hit Rate = 0.92, MRR = 0.77  
 
@@ -173,36 +165,31 @@ Because the difference was minimal (~1 %), gpt-4o-mini was selected for the proj
 
 Several prompt templates were tested — including "direct answer", "chain-of-thought", and "compare foods" variants — and the most concise, grounded prompt was selected based on LLM-judge feedback.
 
-#### Evaluation Summary
+### Evaluation Summary
 
-✅ **Multiple retrieval approaches tested**  
+**Multiple retrieval approaches tested**  
 Different MinSearch configurations were compared — with and without boosting.  
-✅ **Quantitative and qualitative metrics computed**  
+**Quantitative and qualitative metrics computed**  
 Both numeric metrics (Hit Rate, MRR) and human/LLM-based relevance judgments were used.  
-✅ **Best configuration selected and documented**  
+**Best configuration selected and documented**  
 The optimized boosting version (Hit Rate = 0.92, MRR = 0.77) was adopted for the final RAG flow.  
 
 ---
 
 ## 💻 Interface & User Interaction (2/2)
 
-The application offers to interact with the RAG system —  
-via **Flask API endpoints** 
-
----
+The application offers to interact with the RAG system — via **Flask API endpoints** 
 
 ### Flask API
 
-The main entry point is [`app.py`](nutrition_assistant/app.py).
-
-It exposes two endpoints:
+The main entry point is [`app.py`](nutrition_assistant/app.py). It exposes two endpoints:
 
 | Endpoint | Method | Description |
 |-----------|---------|--------------|
 | `/question` | `POST` | Accepts a user question and returns the grounded answer. |
-| `/feedback` | `POST` | Collects user feedback (👍 = 1 / 👎 = -1). |
+| `/feedback` | `POST` | Collects user feedback |
 
-**Example 1 — Asking a Question**
+**Example 1 - Asking a Question**
 ```bash
 URL=http://localhost:5000
 QUESTION="What is the vitamin C content in a 100g apple compared to an orange?"
@@ -225,7 +212,7 @@ curl -X POST \
 }
 ```
 
-**Example 2 — Sending Feedback**
+**Example 2 - Sending Feedback**
 ```bash
 ID="b9b88e9a-b21f-47b8-b1e3-213f57f62d2e"
 URL=http://localhost:5000
@@ -269,8 +256,6 @@ index = ingest.load_index()
 Monitoring in the **Nutrition Assistant** project is partially implemented —  
 Grafana is successfully connected but dashboards are not yet functional.
 
----
-
 ### Current Architecture
 
 | Component | Description |
@@ -278,8 +263,6 @@ Grafana is successfully connected but dashboards are not yet functional.
 | **PostgreSQL** | Stores all RAG interactions and user feedback. |
 | **Grafana** | Connected via Docker Compose to visualize metrics from PostgreSQL. |
 | **Flask API** | Logs every conversation and feedback entry automatically. |
-
----
 
 ### What Works
 ✅ Grafana container runs correctly and connects to PostgreSQL.  
@@ -325,8 +308,6 @@ Each container is isolated yet networked within the same environment, ensuring e
 Containerization in the **Nutrition Assistant** project ensures reproducibility, isolated environments,  
 and simplified deployment using **Docker** and **Docker Compose**.
 
----
-
 ### Docker Structure
 
 | Service | Description |
@@ -336,14 +317,13 @@ and simplified deployment using **Docker** and **Docker Compose**.
 
 The application image is built using a lightweight Python 3.12 base image and pipenv for dependency management.
 
+---
+
 ## 🔁 Reproducibility
 
-The **Nutrition Assistant** project is fully reproducible —  
-any evaluator can clone, configure, and run it locally in minutes  
-without additional setup beyond Docker and an OpenAI API key.
+The **Nutrition Assistant** project is fully reproducible — any evaluator can clone, configure, and run it locally in minutes without additional setup beyond Docker and an OpenAI API key.
 
-This project was verified on both local Docker and GitHub Codespaces environments, ensuring cross-platform reproducibility.
----
+This project was verified on both local Docker and GitHub Codespaces environments, ensuring cross-platform reproducibility
 
 #### Step 1: Clone the Repository
 
@@ -387,8 +367,7 @@ or manually:
 
 #### Step 3: Install Dependencies (Optional Local Run)
 
-If you want to run the application **locally (without Docker)** —  
-use **Pipenv** to install all dependencies in an isolated environment.
+If you want to run the application **locally (without Docker)** — use **Pipenv** to install all dependencies in an isolated environment.
 
 1. **Install Pipenv (if not installed):**
 ```bash
@@ -414,9 +393,7 @@ Open your browser or use curl:
 
 #### Using `requests`
 
-When the application is running, you can use
-[requests](https://requests.readthedocs.io/en/latest/)
-to send questions—use [test.py](test.py) for testing it:
+When the application is running, you can use [requests](https://requests.readthedocs.io/en/latest/) to send questions—use [test.py](test.py) for testing it:
 
 ```bash
 pipenv run python test.py
@@ -479,16 +456,14 @@ After sending it, you'll receive the acknowledgement:
 The easiest and most reliable way to reproduce this project is via **Docker Compose**.  
 This setup automatically starts all components — Flask API, PostgreSQL, and Grafana.
 
----
-
 1. **Build and start containers:**
 ```bash
    docker compose up --build
 ```
 This command:
-Builds the Docker image for the app (nutrition-assistant-app)
-Starts PostgreSQL and Grafana containers
-Connects them through a shared Docker network
+- Builds the Docker image for the app (nutrition-assistant-app)
+- Starts PostgreSQL and Grafana containers
+- Connects them through a shared Docker network
 
 2. **Check that all services are running:**
 ```bash
@@ -509,7 +484,7 @@ Once all containers are up, you can access each component using the following UR
 | **Grafana**    | [http://localhost:3000](http://localhost:3000) | Optional monitoring dashboard for feedback metrics |
 | **PostgreSQL** | `localhost:5432`          | Database storing conversations and feedback logs |
 
-✅ *Tip:*  
+*Tip:*  
 If running inside GitHub Codespaces, replace `localhost` with your forwarded port link (e.g., `https://<your-codespace-id>-5000.app.github.dev`).
 
 4. **View logs (optional):**
